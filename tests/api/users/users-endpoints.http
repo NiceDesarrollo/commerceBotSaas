@@ -1,0 +1,178 @@
+###
+### 👥 MÓDULO DE USUARIOS - Endpoints
+### Pruebas para perfiles, autorización y multiempresa
+###
+
+# Variables del módulo
+@baseUrl = http://localhost:3000/api
+@tenantId = cmdhkxgb90000ogtg90akfgel
+
+# Datos de prueba - Admin
+@adminEmail = admin@tenant.com
+@adminPassword = admin123
+
+# 🔑 TOKEN - Reemplazar con token real después del login
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNDYxODQyLCJleHAiOjE3NTQwNjY2NDJ9.XnfAzrJcWG2n-9h34H1UXu3dGVFnMSGNv-rMlaLENgU
+
+###############################################
+### 🔓 OBTENER TOKEN PARA PRUEBAS
+###############################################
+
+### 1. LOGIN para obtener token (ejecutar primero)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+# ⚠️ IMPORTANTE: Copiar el accessToken de la respuesta y pegarlo en @accessToken arriba
+
+###############################################
+### 🔒 ENDPOINTS PROTEGIDOS - Usuarios
+###############################################
+
+### 2. PERFIL DE USUARIO - Con token válido (✅ 200 esperado)
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+### 3. USUARIOS DEL TENANT - Solo ADMIN (✅ 200 esperado si eres ADMIN)
+GET {{baseUrl}}/users/tenant-users
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### ❌ CASOS DE ERROR - Seguridad JWT
+###############################################
+
+### 4. PERFIL DE USUARIO - Sin token (❌ 401 esperado)
+GET {{baseUrl}}/users/me
+
+### 5. PERFIL DE USUARIO - Token inválido (❌ 401 esperado)
+GET {{baseUrl}}/users/me
+Authorization: Bearer token-completamente-invalido
+
+### 6. PERFIL DE USUARIO - Token malformado (❌ 401 esperado)
+GET {{baseUrl}}/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.TOKEN_MALFORMADO
+
+### 7. PERFIL DE USUARIO - Header Authorization malformado (❌ 401 esperado)
+GET {{baseUrl}}/users/me
+Authorization: {{accessToken}}
+
+### 8. USUARIOS DEL TENANT - Sin token (❌ 401 esperado)
+GET {{baseUrl}}/users/tenant-users
+
+### 9. USUARIOS DEL TENANT - Token inválido (❌ 401 esperado)
+GET {{baseUrl}}/users/tenant-users
+Authorization: Bearer token-invalido
+
+###############################################
+### ⚡ CASOS EDGE - Endpoints
+###############################################
+
+### 10. Endpoint de usuarios inexistente (❌ 404 esperado)
+GET {{baseUrl}}/users/endpoint-inexistente
+Authorization: Bearer {{accessToken}}
+
+### 11. Método HTTP incorrecto en /me (❌ 405 esperado)
+POST {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+### 12. Método HTTP incorrecto en /tenant-users (❌ 405 esperado)
+DELETE {{baseUrl}}/users/tenant-users
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 🧪 PRUEBAS DE AUTORIZACIÓN POR ROLES
+###############################################
+
+# NOTA: Para estas pruebas necesitarías crear un usuario con role USER
+# y obtener su token para probar restricciones de acceso
+
+### 13. Verificar campos en respuesta de /me
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+# ✅ Respuesta esperada (ADMIN):
+# {
+#   "id": "string",
+#   "email": "admin@tenant.com",
+#   "role": "ADMIN",
+#   "tenantId": "string",
+#   "createdAt": "datetime",
+#   "tenant": {
+#     "id": "string",
+#     "name": "Tenant Principal",
+#     "slug": "tenant-principal",
+#     "logoUrl": "string"
+#   }
+# }
+
+### 14. Verificar campos en respuesta de /tenant-users
+GET {{baseUrl}}/users/tenant-users
+Authorization: Bearer {{accessToken}}
+
+# ✅ Respuesta esperada (ADMIN):
+# [
+#   {
+#     "id": "string",
+#     "email": "string",
+#     "role": "ADMIN|USER",
+#     "createdAt": "datetime"
+#   }
+# ]
+
+###############################################
+### 🔧 PRUEBAS DE RENDIMIENTO
+###############################################
+
+### 15. Múltiples requests rápidos a /me
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+### 16. Múltiples requests rápidos a /tenant-users
+GET {{baseUrl}}/users/tenant-users
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 🎯 VERIFICACIÓN DE HEADERS DE RESPUESTA
+###############################################
+
+### 17. Verificar headers CORS en /me
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+### 18. Verificar headers de Content-Type
+GET {{baseUrl}}/users/me
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 📝 NOTAS PARA DESARROLLO
+###############################################
+
+# 🎯 CÓDIGOS DE RESPUESTA ESPERADOS:
+# 200 - Éxito en /me y /tenant-users
+# 401 - Sin token, token inválido, token malformado
+# 403 - Token válido pero sin permisos (futuro: USER accediendo a /tenant-users)
+# 404 - Endpoint inexistente
+# 405 - Método HTTP incorrecto
+
+# 🔐 SEGURIDAD IMPLEMENTADA:
+# - JWT requerido en todos los endpoints de users
+# - Validación de token en cada request
+# - Información de tenant incluida en respuestas
+# - Role-based access para /tenant-users (solo ADMIN)
+
+# 🏢 MULTIEMPRESA:
+# - Todos los datos están scoped por tenantId
+# - /users/me incluye información del tenant
+# - /users/tenant-users solo muestra usuarios del mismo tenant
+
+# 👤 ROLES Y PERMISOS:
+# - USER: Solo puede acceder a /me
+# - ADMIN: Puede acceder a /me y /tenant-users
+
+# 🔧 CAMPOS DEVUELTOS:
+# /me: id, email, role, tenantId, createdAt, tenant{id, name, slug, logoUrl}
+# /tenant-users: id, email, role, createdAt (array) 

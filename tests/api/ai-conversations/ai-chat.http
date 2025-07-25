@@ -1,0 +1,251 @@
+###
+### 🤖 MÓDULO DE CONVERSACIONES IA - ¡YA IMPLEMENTADO!
+### Chat inteligente con Gemini API multiempresa
+###
+
+# Variables del módulo
+@baseUrl = http://localhost:3000/api
+@tenantId = cmdhkxgb90000ogtg90akfgel
+
+# 🔑 TOKEN - Reemplazar con token real después del login
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNDY2ODY0LCJleHAiOjE3NTQwNzE2NjR9.sX9lXiULGaxOLkFDBUiQv7Nh5U9QaoCTHD1G4jp1g9A
+
+# Variables de chat
+@conversationId = CONVERSATION_ID_AQUI
+@clientPhone = +1234567890
+@messageId = MESSAGE_ID_AQUI
+
+###############################################
+### 🔓 OBTENER TOKEN PARA PRUEBAS
+###############################################
+
+### 1. LOGIN para obtener token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@tenant.com",
+  "password": "admin123"
+}
+
+###############################################
+### 💬 CHAT CON GEMINI AI - ¡FUNCIONANDO!
+###############################################
+
+### 2. ENVIAR MENSAJE AL CHAT IA
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Hola, necesito ayuda con productos disponibles",
+  "clientPhone": "{{clientPhone}}"
+}
+
+### 3. CHAT CON CONTEXTO DE CONVERSACIÓN
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Qué laptops tienen disponibles?",
+  "clientPhone": "{{clientPhone}}",
+  "conversationId": "conv-12345"
+}
+
+### 4. CHAT CON CONTEXTO ADICIONAL
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Cuál me recomendarías para programar?",
+  "clientPhone": "{{clientPhone}}",
+  "conversationId": "conv-12345",
+  "context": ["Preguntó por laptops", "Está interesado en programación"]
+}
+
+### 5. OBTENER HISTORIAL DE CONVERSACIONES
+GET {{baseUrl}}/ai/conversations
+Authorization: Bearer {{accessToken}}
+
+### 6. OBTENER HISTORIAL LIMITADO
+GET {{baseUrl}}/ai/conversations?limit=20
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### ⚙️ CONFIGURACIÓN DE BOT - ¡FUNCIONANDO!
+###############################################
+
+### 7. OBTENER CONFIGURACIÓN DEL BOT
+GET {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+
+### 8. ACTUALIZAR CONFIGURACIÓN DEL BOT
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "botName": "Asistente Virtual CommerceBot",
+  "promptStyle": "Amigable, profesional y persuasivo para ventas",
+  "greeting": "¡Hola! Soy tu asistente virtual especializado en productos. ¿En qué puedo ayudarte hoy?",
+  "temperature": 0.8,
+  "useImages": true
+}
+
+### 9. PROBAR CONFIGURACIÓN DEL BOT
+POST {{baseUrl}}/ai/bot-config/test
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "testMessage": "Hola, ¿qué productos tienen disponibles para gaming?"
+}
+
+###############################################
+### 🧠 EJEMPLOS DE CHAT AVANZADO
+###############################################
+
+### 10. CHAT SOBRE PRODUCTOS ESPECÍFICOS
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Busco una laptop para programar, que tenga buena relación precio-calidad",
+  "clientPhone": "+1234567890",
+  "conversationId": "programming-inquiry"
+}
+
+### 11. SEGUIMIENTO DE CONVERSACIÓN
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Cuál de esos productos me recomendarías más?",
+  "clientPhone": "+1234567890",
+  "conversationId": "programming-inquiry"
+}
+
+###############################################
+### 📊 ANALYTICS DE CONVERSACIONES (FUTURO)
+###############################################
+
+### 12. ESTADÍSTICAS DE CONVERSACIONES
+GET {{baseUrl}}/ai/analytics/conversations
+Authorization: Bearer {{accessToken}}
+
+### 13. MENSAJES MÁS FRECUENTES
+GET {{baseUrl}}/ai/analytics/frequent-messages
+Authorization: Bearer {{accessToken}}
+
+### 14. PRODUCTOS MÁS CONSULTADOS
+GET {{baseUrl}}/ai/analytics/popular-products
+Authorization: Bearer {{accessToken}}
+
+### 15. TASA DE CONVERSIÓN POR IA
+GET {{baseUrl}}/ai/analytics/conversion-rate
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 🔄 INTEGRACIONES (FUTURO)
+###############################################
+
+### 16. WEBHOOK DE WHATSAPP (RECIBIR)
+POST {{baseUrl}}/ai/webhooks/whatsapp
+Content-Type: application/json
+
+{
+  "from": "{{clientPhone}}",
+  "message": "Hola, ¿tienen productos disponibles?",
+  "timestamp": "2024-01-01T12:00:00Z"
+}
+
+### 17. ENVIAR MENSAJE VÍA WHATSAPP
+POST {{baseUrl}}/ai/send/whatsapp
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "to": "{{clientPhone}}",
+  "message": "¡Hola! Tenemos laptops en oferta. ¿Te interesa?"
+}
+
+###############################################
+### ❌ CASOS DE ERROR
+###############################################
+
+### 18. MENSAJE VACÍO
+POST {{baseUrl}}/ai/conversations/{{conversationId}}/messages
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "",
+  "clientPhone": "{{clientPhone}}"
+}
+
+### 19. CONVERSACIÓN INEXISTENTE
+GET {{baseUrl}}/ai/conversations/id-inexistente
+Authorization: Bearer {{accessToken}}
+
+### 20. CONFIGURACIÓN INVÁLIDA
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "temperature": 2.0,
+  "botName": ""
+}
+
+###############################################
+### 📝 ESPECIFICACIONES IMPLEMENTADAS
+###############################################
+
+# 🎯 ENDPOINTS FUNCIONANDO:
+# POST   /ai/chat                             - ✅ Enviar mensaje al chat IA
+# GET    /ai/conversations                    - ✅ Obtener historial de conversaciones
+# GET    /ai/bot-config                       - ✅ Obtener configuración del bot
+# PUT    /ai/bot-config                       - ✅ Actualizar configuración del bot
+# POST   /ai/bot-config/test                  - ✅ Probar configuración con mensaje
+
+# 🤖 FUNCIONALIDADES IA IMPLEMENTADAS:
+# ✅ Chat inteligente con Gemini Pro
+# ✅ Contexto de productos automático 
+# ✅ Respuestas contextuales con historial
+# ✅ Configuración personalizable por tenant
+# ✅ Integración con inventario de productos
+# ✅ Memoria de conversaciones por cliente
+
+# 🏢 MULTIEMPRESA IMPLEMENTADO:
+# ✅ Configuración de bot por tenant independiente
+# ✅ Historial separado por tenant (100% aislado)
+# ✅ Prompts personalizados por empresa
+# ✅ Contexto de productos específico del tenant
+# ✅ Branding configurable (nombre, estilo, saludo)
+
+# 🔐 SEGURIDAD IMPLEMENTADA:
+# ✅ JWT obligatorio en todos los endpoints
+# ✅ Aislamiento total por tenant
+# ✅ Validaciones robustas con DTOs
+# ✅ Manejo seguro de API keys de Gemini
+
+# 🔧 CONFIGURACIÓN REQUERIDA:
+# - GEMINI_API_KEY en .env (obtener de Google AI Studio)
+# - Base de datos con tablas: BotConfig, ChatHistory
+
+# 📊 FUNCIONALIDADES BÁSICAS:
+# ✅ Historial de conversaciones guardado
+# ✅ Métricas básicas (tokens usados, timestamp)
+# ✅ Agrupación por cliente/teléfono
+# ✅ Límites configurables en consultas
+
+# 🔮 PRÓXIMAS MEJORAS (FUTURO):
+# ⏳ Webhooks para WhatsApp/Telegram
+# ⏳ Analytics avanzados y métricas
+# ⏳ Rate limiting por cliente
+# ⏳ Respuestas con imágenes
+# ⏳ Integración con más LLMs (GPT, Claude) 

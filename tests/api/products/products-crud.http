@@ -1,0 +1,183 @@
+###
+### 🛒 MÓDULO DE PRODUCTOS - CRUD (FUTURO)
+### Plantilla para pruebas de productos por empresa
+###
+
+# Variables del módulo
+@baseUrl = http://localhost:3000/api
+@tenantId = cmdhkxgb90000ogtg90akfgel
+
+# 🔑 TOKEN - Reemplazar con token real después del login
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNDYyNTE2LCJleHAiOjE3NTQwNjczMTZ9.xeZH6YZ05Yy0-DAdMcpkssOLaElUZnKsaVtNQvdCBjo
+
+# Variables de productos
+@productId = cmdj2c19c0001ogb0s2g4z9v0
+@categoryId = CATEGORY_ID_AQUI
+
+###############################################
+### 🔓 OBTENER TOKEN PARA PRUEBAS
+###############################################
+
+### 1. LOGIN para obtener token
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@tenant.com",
+  "password": "admin123"
+}
+
+###############################################
+### 📦 CRUD DE PRODUCTOS (FUTURO)
+###############################################
+
+### 2. CREAR PRODUCTO
+POST {{baseUrl}}/products
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Producto de Prueba",
+  "description": "Descripción del producto",
+  "price": 29.99,
+  "category": "Electrónicos",
+  "imageUrl": "https://ejemplo.com/imagen.jpg",
+  "stock": 100,
+  "tags": ["nuevo", "oferta"]
+}
+
+### 3. LISTAR PRODUCTOS DEL TENANT
+GET {{baseUrl}}/products
+Authorization: Bearer {{accessToken}}
+
+### 4. OBTENER PRODUCTO POR ID
+GET {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+
+### 5. ACTUALIZAR PRODUCTO
+PUT {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Producto Actualizado",
+  "description": "Descripción actualizada",
+  "price": 34.99,
+  "stock": 50
+}
+
+### 6. ELIMINAR PRODUCTO
+DELETE {{baseUrl}}/products/{{productId}}
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 🏷️ CATEGORÍAS (FUTURO)
+###############################################
+
+### 7. CREAR CATEGORÍA
+POST {{baseUrl}}/products/categories
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Nueva Categoría",
+  "description": "Descripción de la categoría"
+}
+
+### 8. LISTAR CATEGORÍAS
+GET {{baseUrl}}/products/categories
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 🔍 BÚSQUEDA Y FILTROS (FUTURO)
+###############################################
+
+### 9. BUSCAR PRODUCTOS POR NOMBRE
+GET {{baseUrl}}/products/search?q=laptop
+Authorization: Bearer {{accessToken}}
+
+### 10. FILTRAR POR CATEGORÍA
+GET {{baseUrl}}/products?category=Electrónicos
+Authorization: Bearer {{accessToken}}
+
+### 11. FILTRAR POR RANGO DE PRECIO
+GET {{baseUrl}}/products?minPrice=20&maxPrice=50
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### 📊 INVENTARIO (FUTURO)
+###############################################
+
+### 12. ACTUALIZAR STOCK
+PATCH {{baseUrl}}/products/{{productId}}/stock
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "stock": 75,
+  "operation": "set"
+}
+
+### 13. PRODUCTOS CON STOCK BAJO
+GET {{baseUrl}}/products/low-stock?threshold=10
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### ❌ CASOS DE ERROR
+###############################################
+
+### 14. CREAR PRODUCTO - Datos inválidos
+POST {{baseUrl}}/products
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "",
+  "price": -10
+}
+
+### 15. OBTENER PRODUCTO INEXISTENTE
+GET {{baseUrl}}/products/id-inexistente
+Authorization: Bearer {{accessToken}}
+
+### 16. ACTUALIZAR PRODUCTO SIN PERMISOS
+PUT {{baseUrl}}/products/{{productId}}
+Authorization: Bearer token-invalido
+Content-Type: application/json
+
+{
+  "name": "Intento de actualización"
+}
+
+###############################################
+### 📝 ESPECIFICACIONES FUTURAS
+###############################################
+
+# 🎯 ENDPOINTS PLANIFICADOS:
+# GET    /products                    - Listar productos del tenant
+# POST   /products                    - Crear producto
+# GET    /products/:id                - Obtener producto
+# PUT    /products/:id                - Actualizar producto
+# DELETE /products/:id                - Eliminar producto
+# GET    /products/search             - Buscar productos
+# GET    /products/categories         - Listar categorías
+# POST   /products/categories         - Crear categoría
+# PATCH  /products/:id/stock          - Actualizar stock
+
+# 🔐 SEGURIDAD:
+# - Todos los endpoints requieren JWT
+# - Productos scoped por tenantId
+# - Solo ADMIN puede crear/actualizar/eliminar
+# - USER puede solo leer
+
+# 🏢 MULTIEMPRESA:
+# - Productos separados por tenant
+# - Categorías por tenant
+# - Stock independiente por tenant
+
+# 🔧 VALIDACIONES:
+# - Nombre requerido, max 200 chars
+# - Precio > 0
+# - Stock >= 0
+# - Categoría válida
+# - ImageUrl formato URL válido 

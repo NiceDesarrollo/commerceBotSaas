@@ -1,0 +1,229 @@
+###
+### 🔐 MÓDULO DE AUTENTICACIÓN - Endpoints
+### Pruebas para login, registro y validaciones
+###
+
+# Variables del módulo
+@baseUrl = http://localhost:3000/api
+@tenantId = cmdhkxgb90000ogtg90akfgel
+
+# Datos de prueba
+@adminEmail = admin@tenant.com
+@adminPassword = admin123
+@testEmail = test@ejemplo.com
+@testPassword = password123
+
+###############################################
+### 🔓 ENDPOINTS PÚBLICOS DE AUTENTICACIÓN
+###############################################
+
+### 1. LOGIN - Admin existente (✅ Éxito esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+### 2. REGISTRO - Nuevo usuario (✅ Éxito esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{testEmail}}",
+  "password": "{{testPassword}}",
+  "tenantId": "{{tenantId}}"
+}
+
+###############################################
+### ❌ CASOS DE ERROR - Credenciales
+###############################################
+
+### 3. LOGIN - Credenciales incorrectas (❌ 401 esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "password-incorrecto"
+}
+
+### 4. LOGIN - Usuario inexistente (❌ 401 esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "usuario-inexistente@ejemplo.com",
+  "password": "{{adminPassword}}"
+}
+
+### 5. REGISTRO - Email duplicado (❌ 409 esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{testPassword}}",
+  "tenantId": "{{tenantId}}"
+}
+
+###############################################
+### ❌ CASOS DE ERROR - Validaciones
+###############################################
+
+### 6. LOGIN - Email inválido (❌ 400 esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "email-sin-formato-valido",
+  "password": "{{adminPassword}}"
+}
+
+### 7. LOGIN - Campos faltantes (❌ 400 esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}"
+}
+
+### 8. REGISTRO - Contraseña muy corta (❌ 400 esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo@ejemplo.com",
+  "password": "123",
+  "tenantId": "{{tenantId}}"
+}
+
+### 9. REGISTRO - TenantId inválido (❌ 400 esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo2@ejemplo.com",
+  "password": "{{testPassword}}",
+  "tenantId": "no-es-un-uuid-valido"
+}
+
+### 10. REGISTRO - TenantId inexistente (❌ 404 esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo3@ejemplo.com",
+  "password": "{{testPassword}}",
+  "tenantId": "12345678-1234-1234-1234-123456789012"
+}
+
+### 11. REGISTRO - Todos los campos faltantes (❌ 400 esperado)
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{}
+
+###############################################
+### ⚡ CASOS EDGE
+###############################################
+
+### 12. LOGIN - JSON malformado (❌ 400 esperado)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+  // JSON inválido - falta coma
+
+### 13. LOGIN - Content-Type incorrecto
+POST {{baseUrl}}/auth/login
+Content-Type: text/plain
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+### 14. LOGIN - Método HTTP incorrecto (❌ 405 esperado)
+GET {{baseUrl}}/auth/login
+
+### 15. REGISTRO - Email muy largo
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "usuario-con-email-extremadamente-largo-que-supera-limites-normales@dominio-muy-muy-muy-largo.com",
+  "password": "{{testPassword}}",
+  "tenantId": "{{tenantId}}"
+}
+
+###############################################
+### 📊 VERIFICACIÓN DE ESTRUCTURA DE RESPUESTAS
+###############################################
+
+### 16. Verificar estructura de respuesta LOGIN
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{adminEmail}}",
+  "password": "{{adminPassword}}"
+}
+
+# ✅ Respuesta esperada:
+# {
+#   "accessToken": "eyJ...",
+#   "user": {
+#     "id": "string",
+#     "email": "admin@tenant.com",
+#     "role": "ADMIN",
+#     "tenantId": "string"
+#   }
+# }
+
+### 17. Verificar estructura de respuesta REGISTRO
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "nuevo-usuario-test@ejemplo.com",
+  "password": "{{testPassword}}",
+  "tenantId": "{{tenantId}}"
+}
+
+# ✅ Respuesta esperada:
+# {
+#   "accessToken": "eyJ...",
+#   "user": {
+#     "id": "string",
+#     "email": "nuevo-usuario-test@ejemplo.com",
+#     "role": "USER",
+#     "tenantId": "string"
+#   }
+# }
+
+###############################################
+### 📝 NOTAS PARA DESARROLLO
+###############################################
+
+# 🎯 CÓDIGOS DE RESPUESTA ESPERADOS:
+# 200 - Login exitoso
+# 201 - Registro exitoso  
+# 400 - Error de validación (email, password, tenantId)
+# 401 - Credenciales inválidas
+# 404 - Tenant no encontrado
+# 409 - Email ya existe
+
+# 🔧 VALIDACIONES IMPLEMENTADAS:
+# - Email debe ser formato válido
+# - Password mínimo 6 caracteres
+# - TenantId debe ser UUID válido
+# - Todos los campos son requeridos
+
+# 🔐 SEGURIDAD:
+# - Contraseñas hasheadas con bcrypt
+# - JWT incluye userId, email, role, tenantId
+# - Mensajes de error no revelan información sensible 
