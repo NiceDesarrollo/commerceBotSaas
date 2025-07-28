@@ -1,27 +1,17 @@
 import { Injectable, BadRequestException, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { GoogleGenAI } from '@google/genai';
-import { PrismaService } from '../prisma/prisma.service';
-import { ChatMessageDto, ChatResponseDto } from './dto/chat-message.dto';
-import { UpdateBotConfigDto, TestBotConfigDto } from './dto/bot-config.dto';
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../prisma/prisma.service";
+import { ChatMessageDto, ChatResponseDto } from "./dto/chat-message.dto";
+import { UpdateBotConfigDto, TestBotConfigDto } from "./dto/bot-config.dto";
+import { AiProviderService } from "./services/ai-provider.service";
 
 @Injectable()
 export class AiService {
-  private genAI: GoogleGenAI;
-
   constructor(
     private prisma: PrismaService,
     private configService: ConfigService,
-  ) {
-    // Inicializar Gemini AI con nueva API
-    const apiKey = this.configService.get<string>('GEMINI_API_KEY');
-    if (!apiKey) {
-      console.warn('⚠️  GEMINI_API_KEY no configurada. Los endpoints de IA no funcionarán.');
-    } else {
-      // La nueva API detecta automáticamente la variable de entorno GEMINI_API_KEY
-      this.genAI = new GoogleGenAI({});
-    }
-  }
+    private aiProviderService: AiProviderService
+  ) {}
 
   // Obtener o crear configuración del bot para el tenant
   async getBotConfig(tenantId: string) {
@@ -44,9 +34,10 @@ export class AiService {
         botConfig = await this.prisma.botConfig.create({
           data: {
             tenantId,
-            botName: 'Asistente IA',
-            promptStyle: 'Amable, clara y persuasiva',
-            greeting: 'Hola, soy tu asistente virtual. ¿En qué puedo ayudarte hoy?',
+            botName: "Asistente IA",
+            promptStyle: "Amable, clara y persuasiva",
+            greeting:
+              "Hola, soy tu asistente virtual. ¿En qué puedo ayudarte hoy?",
             temperature: 0.7,
             useImages: true,
           },
@@ -64,7 +55,9 @@ export class AiService {
 
       return botConfig;
     } catch (error) {
-      throw new BadRequestException('Error al obtener la configuración del bot');
+      throw new BadRequestException(
+        "Error al obtener la configuración del bot"
+      );
     }
   }
 
@@ -93,23 +86,24 @@ export class AiService {
       if (error instanceof BadRequestException) {
         throw error;
       }
-      throw new BadRequestException('Error al actualizar la configuración del bot');
+      throw new BadRequestException(
+        "Error al actualizar la configuración del bot"
+      );
     }
   }
 
   // Enviar mensaje al modelo de IA
-  async sendMessage(tenantId: string, chatDto: ChatMessageDto): Promise<ChatResponseDto> {
-    if (!this.genAI) {
-      throw new InternalServerErrorException('Gemini API no está configurada. Contacta al administrador.');
-    }
-
+  async sendMessage(
+    tenantId: string,
+    chatDto: ChatMessageDto
+  ): Promise<ChatResponseDto> {
     try {
       // Obtener configuración del bot
       const botConfig = await this.getBotConfig(tenantId);
-      
+
       // Obtener productos del tenant para contexto
       const products = await this.getProductsContext(tenantId);
-      
+
       // Obtener información del tenant
       const tenant = await this.prisma.tenant.findUnique({
         where: { id: tenantId },
@@ -118,46 +112,56 @@ export class AiService {
 
       // Construir prompt contextual
       const systemPrompt = this.buildSystemPrompt(botConfig, tenant, products);
-      
+
       // Obtener historial si hay conversationId
-      let conversationHistory = '';
+      let conversationHistory = "";
       if (chatDto.conversationId) {
-        conversationHistory = await this.getConversationHistory(chatDto.conversationId, tenantId);
+        conversationHistory = await this.getConversationHistory(
+          chatDto.conversationId,
+          tenantId
+        );
       }
 
       // Construir mensaje completo
       const fullMessage = `${systemPrompt}\n\nHistorial de conversación:\n${conversationHistory}\n\nUsuario: ${chatDto.message}\n\nAsistente:`;
 
-      // Llamar a Gemini con nueva API 2.5
-      const result = await this.genAI.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: fullMessage,
-        config: {
-          thinkingConfig: {
-            thinkingBudget: 0, // Deshabilita thinking para mayor velocidad
-          },
-        },
-      });
+      // Usar el proveedor de IA configurado
+      const aiConfig = {
+        temperature: botConfig.temperature,
+        model: (botConfig as any).aiModel || undefined,
+      };
 
-      const aiResponse = result.text;
+      const aiResult = await this.aiProviderService.generateResponse(
+        fullMessage,
+        aiConfig
+      );
 
       // Generar ID de conversación si no existe
-      const conversationId = chatDto.conversationId || this.generateConversationId();
+      const conversationId =
+        chatDto.conversationId || this.generateConversationId();
 
       // Guardar historial de la conversación
-      await this.saveConversationHistory(tenantId, conversationId, chatDto.message, aiResponse, chatDto.clientPhone);
+      await this.saveConversationHistory(
+        tenantId,
+        conversationId,
+        chatDto.message,
+        aiResult.text,
+        chatDto.clientPhone
+      );
 
-             return {
-         response: aiResponse,
-         conversationId,
-         timestamp: new Date(),
-         tokensUsed: result.usageMetadata?.totalTokenCount || 0,
-         model: 'gemini-2.5-flash',
-       };
-
+      return {
+        response: aiResult.text,
+        conversationId,
+        timestamp: new Date(),
+        tokensUsed: aiResult.tokensUsed,
+        model: aiResult.model,
+        provider: aiResult.provider,
+      };
     } catch (error) {
-      console.error('Error en Gemini AI:', error);
-      throw new InternalServerErrorException('Error al procesar el mensaje con IA');
+      console.error("Error en IA:", error);
+      throw new InternalServerErrorException(
+        "Error al procesar el mensaje con IA"
+      );
     }
   }
 
@@ -169,7 +173,7 @@ export class AiService {
     };
 
     const response = await this.sendMessage(tenantId, chatDto);
-    
+
     return {
       ...response,
       isTest: true,
@@ -182,7 +186,7 @@ export class AiService {
     try {
       const conversations = await this.prisma.chatHistory.findMany({
         where: { tenantId },
-        orderBy: { timestamp: 'desc' },
+        orderBy: { timestamp: "desc" },
         take: limit,
         select: {
           id: true,
@@ -194,14 +198,17 @@ export class AiService {
       });
 
       // Agrupar por conversación (clientPhone)
-      const groupedConversations = conversations.reduce((acc, msg) => {
-        const key = msg.clientPhone || 'general';
-        if (!acc[key]) {
-          acc[key] = [];
-        }
-        acc[key].push(msg);
-        return acc;
-      }, {} as Record<string, any[]>);
+      const groupedConversations = conversations.reduce(
+        (acc, msg) => {
+          const key = msg.clientPhone || "general";
+          if (!acc[key]) {
+            acc[key] = [];
+          }
+          acc[key].push(msg);
+          return acc;
+        },
+        {} as Record<string, any[]>
+      );
 
       return {
         conversations: groupedConversations,
@@ -209,18 +216,23 @@ export class AiService {
         clients: Object.keys(groupedConversations).length,
       };
     } catch (error) {
-      throw new BadRequestException('Error al obtener conversaciones');
+      throw new BadRequestException("Error al obtener conversaciones");
     }
   }
 
   // MÉTODOS PRIVADOS
 
-  private buildSystemPrompt(botConfig: any, tenant: any, products: any[]): string {
-    const productsContext = products.length > 0 
-      ? `\n\nProductos disponibles:\n${products.map(p => `- ${p.name}: $${p.price} (Stock: ${p.stock})`).join('\n')}`
-      : '';
+  private buildSystemPrompt(
+    botConfig: any,
+    tenant: any,
+    products: any[]
+  ): string {
+    const productsContext =
+      products.length > 0
+        ? `\n\nProductos disponibles:\n${products.map((p) => `- ${p.name}: $${p.price} (Stock: ${p.stock})`).join("\n")}`
+        : "";
 
-    return `Eres ${botConfig.botName}, un asistente virtual para ${tenant?.name || 'la empresa'}.
+    return `Eres ${botConfig.botName}, un asistente virtual para ${tenant?.name || "la empresa"}.
 
 PERSONALIDAD: ${botConfig.promptStyle}
 
@@ -240,7 +252,7 @@ Responde de forma clara, concisa y helpful.`;
   private async getProductsContext(tenantId: string): Promise<any[]> {
     try {
       return await this.prisma.product.findMany({
-        where: { 
+        where: {
           tenantId,
           stock: { gt: 0 }, // Solo productos con stock
         },
@@ -254,22 +266,25 @@ Responde de forma clara, concisa y helpful.`;
           tags: true,
         },
         take: 20, // Limitar para no sobrecargar el prompt
-        orderBy: { createdAt: 'desc' },
+        orderBy: { createdAt: "desc" },
       });
     } catch (error) {
-      console.error('Error obteniendo productos para contexto:', error);
+      console.error("Error obteniendo productos para contexto:", error);
       return [];
     }
   }
 
-  private async getConversationHistory(conversationId: string, tenantId: string): Promise<string> {
+  private async getConversationHistory(
+    conversationId: string,
+    tenantId: string
+  ): Promise<string> {
     try {
       const history = await this.prisma.chatHistory.findMany({
-        where: { 
+        where: {
           tenantId,
           clientPhone: conversationId, // Usando clientPhone como conversationId por simplicidad
         },
-        orderBy: { timestamp: 'asc' },
+        orderBy: { timestamp: "asc" },
         take: 10, // Últimos 10 mensajes
         select: {
           direction: true,
@@ -278,19 +293,22 @@ Responde de forma clara, concisa y helpful.`;
         },
       });
 
-      return history.map(h => 
-        `${h.direction === 'INCOMING' ? 'Usuario' : 'Asistente'}: ${h.message}`
-      ).join('\n');
+      return history
+        .map(
+          (h) =>
+            `${h.direction === "INCOMING" ? "Usuario" : "Asistente"}: ${h.message}`
+        )
+        .join("\n");
     } catch (error) {
-      console.error('Error obteniendo historial:', error);
-      return '';
+      console.error("Error obteniendo historial:", error);
+      return "";
     }
   }
 
   private async saveConversationHistory(
-    tenantId: string, 
-    conversationId: string, 
-    userMessage: string, 
+    tenantId: string,
+    conversationId: string,
+    userMessage: string,
     aiResponse: string,
     clientPhone?: string
   ) {
@@ -300,7 +318,7 @@ Responde de forma clara, concisa y helpful.`;
         data: {
           tenantId,
           clientPhone: clientPhone || conversationId,
-          direction: 'INCOMING',
+          direction: "INCOMING",
           message: userMessage,
         },
       });
@@ -310,12 +328,12 @@ Responde de forma clara, concisa y helpful.`;
         data: {
           tenantId,
           clientPhone: clientPhone || conversationId,
-          direction: 'OUTGOING',
+          direction: "OUTGOING",
           message: aiResponse,
         },
       });
     } catch (error) {
-      console.error('Error guardando historial:', error);
+      console.error("Error guardando historial:", error);
       // No lanzar error aquí para no interrumpir la respuesta
     }
   }

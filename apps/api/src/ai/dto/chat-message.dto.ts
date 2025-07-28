@@ -26,4 +26,5 @@ export class ChatResponseDto {
   timestamp: Date;
   tokensUsed?: number;
   model: string;
+  provider?: string;
 } 

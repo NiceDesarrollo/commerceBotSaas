@@ -1,0 +1,202 @@
+###
+### 🤖 MÚLTIPLES PROVEEDORES DE IA - GEMINI + GPT
+### Sistema escalable con fallback automático
+###
+
+# Variables
+@baseUrl = http://localhost:3000/api
+@accessToken = TU_TOKEN_AQUI
+
+###############################################
+### 🔍 ESTADO DE PROVEEDORES DE IA
+###############################################
+
+### 1. VER PROVEEDORES DISPONIBLES
+GET {{baseUrl}}/ai/providers/status
+Authorization: Bearer {{accessToken}}
+
+###############################################
+### ⚙️ CONFIGURACIÓN AVANZADA DEL BOT
+###############################################
+
+### 2. CONFIGURAR BOT PARA USAR GEMINI
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "botName": "AsistenteBot Pro",
+  "promptStyle": "Profesional y técnico con enfoque comercial",
+  "greeting": "¡Hola! Soy tu asistente especializado. ¿Cómo puedo ayudarte?",
+  "temperature": 0.7,
+  "useImages": true,
+  "aiProvider": "gemini",
+  "aiModel": "gemini-2.5-flash"
+}
+
+### 3. CONFIGURAR BOT PARA USAR GPT
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "botName": "ChatBot GPT",
+  "promptStyle": "Creativo y conversacional",
+  "greeting": "¡Hola! Soy tu asistente potenciado por GPT. ¿En qué puedo ayudarte?",
+  "temperature": 0.8,
+  "useImages": false,
+  "aiProvider": "openai",
+  "aiModel": "gpt-3.5-turbo"
+}
+
+### 4. CONFIGURAR BOT CON FALLBACK AUTOMÁTICO
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "botName": "AsistenteBot Híbrido",
+  "promptStyle": "Adaptativo y inteligente",
+  "greeting": "¡Hola! Uso la mejor IA disponible para ayudarte.",
+  "temperature": 0.7,
+  "useImages": true,
+  "aiProvider": "auto"
+}
+
+###############################################
+### 💬 CHAT CON DIFERENTES PROVEEDORES
+###############################################
+
+### 5. CHAT CON CONFIGURACIÓN ACTUAL
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Qué productos de tecnología tienen disponibles?",
+  "clientPhone": "+1234567890",
+  "conversationId": "test-multi-ai"
+}
+
+### 6. PROBAR CONFIGURACIÓN CON GEMINI
+POST {{baseUrl}}/ai/bot-config/test
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "testMessage": "Explícame las ventajas de sus laptops para gaming"
+}
+
+###############################################
+### 📊 COMPARAR RESPUESTAS DE DIFERENTES MODELOS
+###############################################
+
+### 7. CONFIGURAR PARA GPT-4 (si disponible)
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "aiProvider": "openai",
+  "aiModel": "gpt-4",
+  "temperature": 0.6
+}
+
+### 8. MISMO MENSAJE CON GPT-4
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Qué productos de tecnología tienen disponibles?",
+  "clientPhone": "+1234567890",
+  "conversationId": "gpt4-test"
+}
+
+### 9. CONFIGURAR PARA GEMINI PRO
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "aiProvider": "gemini",
+  "aiModel": "gemini-pro",
+  "temperature": 0.6
+}
+
+### 10. MISMO MENSAJE CON GEMINI PRO
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Qué productos de tecnología tienen disponibles?",
+  "clientPhone": "+1234567890",
+  "conversationId": "gemini-pro-test"
+}
+
+###############################################
+### 🔄 PRUEBAS DE FALLBACK
+###############################################
+
+### 11. CONFIGURAR PROVEEDOR PRIMARIO
+# En .env: PRIMARY_AI_PROVIDER=gemini
+
+### 12. CHAT QUE DEBERÍA USAR GEMINI PRIMERO
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Tienen productos en oferta esta semana?",
+  "clientPhone": "+1234567890"
+}
+
+### 13. CHAT CON FALLBACK (si Gemini falla, usa OpenAI)
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Necesito una recomendación para trabajar desde casa",
+  "clientPhone": "+1234567890"
+}
+
+###############################################
+### ⚙️ VARIABLES DE ENTORNO NECESARIAS
+###############################################
+
+# En tu archivo .env:
+# GEMINI_API_KEY=tu_clave_gemini_aqui
+# OPENAI_API_KEY=tu_clave_openai_aqui  
+# PRIMARY_AI_PROVIDER=gemini  # o "openai" o "auto"
+
+###############################################
+### 📋 RESPUESTAS ESPERADAS
+###############################################
+
+# Cada respuesta incluirá:
+# {
+#   "response": "Texto de respuesta de IA",
+#   "conversationId": "id-unico",
+#   "timestamp": "2024-01-01T12:00:00Z",
+#   "tokensUsed": 150,
+#   "model": "gemini-2.5-flash" | "gpt-3.5-turbo",
+#   "provider": "gemini" | "openai"
+# }
+
+###############################################
+### 🔍 MONITOREO Y DEBUG
+###############################################
+
+### 14. VER ESTADO ACTUALIZADO
+GET {{baseUrl}}/ai/providers/status
+Authorization: Bearer {{accessToken}}
+
+### 15. VER CONFIGURACIÓN ACTUAL
+GET {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{accessToken}}
+
+### 16. HISTORIAL DE CONVERSACIONES
+GET {{baseUrl}}/ai/conversations?limit=20
+Authorization: Bearer {{accessToken}} 

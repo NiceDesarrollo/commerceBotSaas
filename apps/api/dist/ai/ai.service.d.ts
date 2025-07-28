@@ -1,12 +1,13 @@
-import { ConfigService } from '@nestjs/config';
-import { PrismaService } from '../prisma/prisma.service';
-import { ChatMessageDto, ChatResponseDto } from './dto/chat-message.dto';
-import { UpdateBotConfigDto, TestBotConfigDto } from './dto/bot-config.dto';
+import { ConfigService } from "@nestjs/config";
+import { PrismaService } from "../prisma/prisma.service";
+import { ChatMessageDto, ChatResponseDto } from "./dto/chat-message.dto";
+import { UpdateBotConfigDto, TestBotConfigDto } from "./dto/bot-config.dto";
+import { AiProviderService } from "./services/ai-provider.service";
 export declare class AiService {
     private prisma;
     private configService;
-    private genAI;
-    constructor(prisma: PrismaService, configService: ConfigService);
+    private aiProviderService;
+    constructor(prisma: PrismaService, configService: ConfigService, aiProviderService: AiProviderService);
     getBotConfig(tenantId: string): Promise<{
         tenant: {
             id: string;
@@ -46,6 +47,7 @@ export declare class AiService {
         timestamp: Date;
         tokensUsed?: number;
         model: string;
+        provider?: string;
     }>;
     getConversations(tenantId: string, limit?: number): Promise<{
         conversations: Record<string, any[]>;

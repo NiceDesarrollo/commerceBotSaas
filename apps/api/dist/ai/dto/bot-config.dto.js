@@ -18,40 +18,57 @@ exports.UpdateBotConfigDto = UpdateBotConfigDto;
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(100, { message: 'El nombre del bot no puede exceder 100 caracteres' }),
+    (0, class_validator_1.MaxLength)(100, {
+        message: "El nombre del bot no puede exceder 100 caracteres",
+    }),
     __metadata("design:type", String)
 ], UpdateBotConfigDto.prototype, "botName", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500, { message: 'El estilo de prompt no puede exceder 500 caracteres' }),
+    (0, class_validator_1.MaxLength)(500, {
+        message: "El estilo de prompt no puede exceder 500 caracteres",
+    }),
     __metadata("design:type", String)
 ], UpdateBotConfigDto.prototype, "promptStyle", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500, { message: 'El mensaje de saludo no puede exceder 500 caracteres' }),
+    (0, class_validator_1.MaxLength)(500, {
+        message: "El mensaje de saludo no puede exceder 500 caracteres",
+    }),
     __metadata("design:type", String)
 ], UpdateBotConfigDto.prototype, "greeting", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)({}, { message: 'La temperatura debe ser un número' }),
-    (0, class_validator_1.Min)(0, { message: 'La temperatura debe ser mayor o igual a 0' }),
-    (0, class_validator_1.Max)(2, { message: 'La temperatura debe ser menor o igual a 2' }),
+    (0, class_validator_1.IsNumber)({}, { message: "La temperatura debe ser un número" }),
+    (0, class_validator_1.Min)(0, { message: "La temperatura debe ser mayor o igual a 0" }),
+    (0, class_validator_1.Max)(2, { message: "La temperatura debe ser menor o igual a 2" }),
     (0, class_transformer_1.Transform)(({ value }) => parseFloat(value)),
     __metadata("design:type", Number)
 ], UpdateBotConfigDto.prototype, "temperature", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)({ message: 'useImages debe ser un booleano' }),
+    (0, class_validator_1.IsBoolean)({ message: "useImages debe ser un booleano" }),
     (0, class_transformer_1.Transform)(({ value }) => {
-        if (typeof value === 'string') {
-            return value.toLowerCase() === 'true';
+        if (typeof value === "string") {
+            return value.toLowerCase() === "true";
         }
         return Boolean(value);
     }),
     __metadata("design:type", Boolean)
 ], UpdateBotConfigDto.prototype, "useImages", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateBotConfigDto.prototype, "aiProvider", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(50, { message: "El modelo de IA no puede exceder 50 caracteres" }),
+    __metadata("design:type", String)
+], UpdateBotConfigDto.prototype, "aiModel", void 0);
 class TestBotConfigDto {
 }
 exports.TestBotConfigDto = TestBotConfigDto;

@@ -70,6 +70,8 @@ model BotConfig{
   greeting String @default("Hola, soy tu asistente virtual. ¿En qué puedo ayudarte hoy?")
   temperature Float @default(0.7)
   useImages Boolean @default(true)
+  aiProvider String @default("gemini") // "gemini", "openai", "auto"
+  aiModel String? // Modelo específico como "gpt-4", "gemini-pro"
 }
 
 model ChatHistory{

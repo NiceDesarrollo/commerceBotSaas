@@ -15,13 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AiController = void 0;
 const common_1 = require("@nestjs/common");
 const ai_service_1 = require("./ai.service");
+const ai_provider_service_1 = require("./services/ai-provider.service");
 const chat_message_dto_1 = require("./dto/chat-message.dto");
 const bot_config_dto_1 = require("./dto/bot-config.dto");
 const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 const user_decorator_1 = require("../auth/decorators/user.decorator");
 let AiController = class AiController {
-    constructor(aiService) {
+    constructor(aiService, aiProviderService) {
         this.aiService = aiService;
+        this.aiProviderService = aiProviderService;
     }
     async sendMessage(chatDto, user) {
         return this.aiService.sendMessage(user.tenantId, chatDto);
@@ -38,10 +40,13 @@ let AiController = class AiController {
     async getConversations(limit, user) {
         return this.aiService.getConversations(user.tenantId, limit);
     }
+    async getProvidersStatus() {
+        return this.aiProviderService.getProviderStatus();
+    }
 };
 exports.AiController = AiController;
 __decorate([
-    (0, common_1.Post)('chat'),
+    (0, common_1.Post)("chat"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, user_decorator_1.User)()),
@@ -50,14 +55,14 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AiController.prototype, "sendMessage", null);
 __decorate([
-    (0, common_1.Get)('bot-config'),
+    (0, common_1.Get)("bot-config"),
     __param(0, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AiController.prototype, "getBotConfig", null);
 __decorate([
-    (0, common_1.Put)('bot-config'),
+    (0, common_1.Put)("bot-config"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
@@ -65,7 +70,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AiController.prototype, "updateBotConfig", null);
 __decorate([
-    (0, common_1.Post)('bot-config/test'),
+    (0, common_1.Post)("bot-config/test"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, user_decorator_1.User)()),
@@ -74,16 +79,23 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AiController.prototype, "testBotConfig", null);
 __decorate([
-    (0, common_1.Get)('conversations'),
-    __param(0, (0, common_1.Query)('limit', new common_1.DefaultValuePipe(50), common_1.ParseIntPipe)),
+    (0, common_1.Get)("conversations"),
+    __param(0, (0, common_1.Query)("limit", new common_1.DefaultValuePipe(50), common_1.ParseIntPipe)),
     __param(1, (0, user_decorator_1.User)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], AiController.prototype, "getConversations", null);
+__decorate([
+    (0, common_1.Get)("providers/status"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AiController.prototype, "getProvidersStatus", null);
 exports.AiController = AiController = __decorate([
-    (0, common_1.Controller)('ai'),
+    (0, common_1.Controller)("ai"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [ai_service_1.AiService])
+    __metadata("design:paramtypes", [ai_service_1.AiService,
+        ai_provider_service_1.AiProviderService])
 ], AiController);
 //# sourceMappingURL=ai.controller.js.map
