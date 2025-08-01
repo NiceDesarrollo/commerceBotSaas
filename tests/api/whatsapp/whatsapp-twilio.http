@@ -2,7 +2,7 @@
 ### Asegúrate de tener un JWT token válido
 
 @baseUrl = http://localhost:3000/api
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWR0MzE0MmcwMDAyb2dud2twdnlscmZrIiwiZW1haWwiOiJhZG1pbkBmcmlraXBsYXphLmNvbSIsInJvbGUiOiJBRE1JTiIsInRlbmFudElkIjoiY21kdDMxM3gzMDAwMG9nbnd3NmJpYjEwaSIsImlhdCI6MTc1NDA2ODQ5OSwiZXhwIjoxNzU0NjczMjk5fQ.GSlLgHGuPLadYSw7ZGtHMJFqOjUYjFWcJ7X0WpTXdA0
+@authToken = YOUR_JWT_TOKEN_HERE
 
 ### 1. Ver proveedores disponibles
 GET {{baseUrl}}/whatsapp/providers
@@ -13,9 +13,9 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "twilioAccountSid": "ACec93a063d247fb851061f46629b3072e",
-  "twilioAuthToken": "ffd2e7bb317612ee2dc09fc7291f90f0",
-  "twilioPhoneNumber": "whatsapp:+12543234752",
+  "twilioAccountSid": "YOUR_TWILIO_ACCOUNT_SID",
+  "twilioAuthToken": "YOUR_TWILIO_AUTH_TOKEN", 
+  "twilioPhoneNumber": "whatsapp:+YOUR_TWILIO_PHONE_NUMBER",
   "whatsappProvider": "twilio",
   "isWhatsappEnabled": true
 }
@@ -40,7 +40,7 @@ Authorization: Bearer {{authToken}}
 Content-Type: application/json
 
 {
-  "to": "+573001234567",
+  "to": "+YOUR_TEST_PHONE_NUMBER",
   "message": "¡Hola! Bienvenido a PC Gamers Elite. Tenemos las mejores RTX 4090 disponibles. ¿Te interesa conocer nuestras ofertas?"
 }
 
