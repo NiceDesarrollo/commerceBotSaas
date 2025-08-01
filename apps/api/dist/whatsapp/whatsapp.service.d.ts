@@ -32,8 +32,8 @@ export declare class WhatsappService {
             name: string;
             slug: string;
         };
-        id: string;
         tenantId: string;
+        id: string;
         botName: string;
         promptStyle: string;
         greeting: string;

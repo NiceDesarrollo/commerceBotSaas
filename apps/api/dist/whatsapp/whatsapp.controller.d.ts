@@ -34,8 +34,8 @@ export declare class WhatsappController {
             name: string;
             slug: string;
         };
-        id: string;
         tenantId: string;
+        id: string;
         botName: string;
         promptStyle: string;
         greeting: string;
