@@ -22,6 +22,16 @@ export declare class AiService {
         greeting: string;
         temperature: number;
         useImages: boolean;
+        aiProvider: string;
+        aiModel: string | null;
+        whatsappPhoneNumberId: string | null;
+        whatsappAccessToken: string | null;
+        whatsappWebhookToken: string | null;
+        whatsappProvider: string;
+        isWhatsappEnabled: boolean;
+        twilioAccountSid: string | null;
+        twilioAuthToken: string | null;
+        twilioPhoneNumber: string | null;
     }>;
     updateBotConfig(tenantId: string, updateDto: UpdateBotConfigDto): Promise<{
         tenant: {
@@ -37,6 +47,16 @@ export declare class AiService {
         greeting: string;
         temperature: number;
         useImages: boolean;
+        aiProvider: string;
+        aiModel: string | null;
+        whatsappPhoneNumberId: string | null;
+        whatsappAccessToken: string | null;
+        whatsappWebhookToken: string | null;
+        whatsappProvider: string;
+        isWhatsappEnabled: boolean;
+        twilioAccountSid: string | null;
+        twilioAuthToken: string | null;
+        twilioPhoneNumber: string | null;
     }>;
     sendMessage(tenantId: string, chatDto: ChatMessageDto): Promise<ChatResponseDto>;
     testBotConfig(tenantId: string, testDto: TestBotConfigDto): Promise<{

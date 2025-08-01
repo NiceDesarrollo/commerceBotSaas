@@ -5,12 +5,12 @@
 
 # Variables del módulo
 @baseUrl = http://localhost:3000/api
-@tenantId = cmdhkxgb90000ogtg90akfgel
+@tenantId = cmdoq78720000ogiscz0rb3zt
 
-# Datos de prueba
-@adminEmail = admin@tenant.com
+# Datos de prueba - Friki Plaza
+@adminEmail = admin@frikiplaza.com
 @adminPassword = admin123
-@testEmail = test@ejemplo.com
+@testEmail = empleado@frikiplaza.com
 @testPassword = password123
 
 ###############################################

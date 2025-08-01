@@ -1,0 +1,262 @@
+### Setup Completo del Tenant PC Gamers Elite
+### Ejecuta estos requests en orden para configurar todo
+
+@baseUrl = http://localhost:3000/api
+
+################################
+# PASO 1: CREAR TENANT Y USUARIO
+################################
+
+### 1.1 Registrar tenant PC Gamers
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "admin@pcgamerselite.com",
+  "password": "pcgamers2024!",
+  "tenantName": "PC Gamers Elite",
+  "tenantSlug": "pc-gamers-elite"
+}
+
+### 1.2 Login para obtener JWT
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@pcgamerselite.com",
+  "password": "pcgamers2024!"
+}
+
+# ⚠️ IMPORTANTE: Copia el JWT token de la respuesta anterior y úsalo en @authToken
+@authToken = PEGAR_JWT_TOKEN_AQUI
+
+################################
+# PASO 2: CONFIGURAR BOT DE IA
+################################
+
+### 2.1 Configurar bot especializado en gaming
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "botName": "Alex - Experto PC Gaming",
+  "promptStyle": "Soy Alex, un experto entusiasta en gaming y hardware de PCs. Conozco perfectamente todos los componentes y puedo ayudar a armar el setup gaming perfecto. Soy amigable pero técnico cuando es necesario. Siempre pregunto sobre el presupuesto, los juegos que quieren jugar y la resolución deseada para hacer la mejor recomendación.",
+  "greeting": "¡Hola! Soy Alex, tu experto en PCs gaming de PC Gamers Elite 🎮\n\n¿Estás buscando armar tu setup gaming definitivo o hacer un upgrade? ¡Cuéntame qué tienes en mente y te ayudo a encontrar los mejores componentes!",
+  "temperature": 0.8,
+  "aiProvider": "gemini",
+  "useImages": true
+}
+
+################################
+# PASO 3: AGREGAR PRODUCTOS GAMING
+################################
+
+### 3.1 RTX 4090 - Flagship
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "RTX 4090 ASUS ROG Strix OC",
+  "description": "La tarjeta gráfica más poderosa del mercado. Perfect para gaming 4K, ray tracing extremo y content creation. 24GB GDDR6X.",
+  "price": 2800000,
+  "category": "Tarjetas Gráficas",
+  "stock": 2,
+  "tags": ["nvidia", "rtx", "4090", "asus", "4k", "raytracing", "flagship"]
+}
+
+### 3.2 RTX 4080 - High-end
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "RTX 4080 MSI Gaming X Trio",
+  "description": "Excelente para gaming 4K y 1440p extremo. Ray tracing avanzado con gran rendimiento. 16GB GDDR6X.",
+  "price": 2200000,
+  "category": "Tarjetas Gráficas", 
+  "stock": 4,
+  "tags": ["nvidia", "rtx", "4080", "msi", "4k", "raytracing", "gaming"]
+}
+
+### 3.3 RTX 4070 Ti - Enthusiast
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "RTX 4070 Ti Gigabyte Gaming OC",
+  "description": "Ideal para gaming 1440p ultra settings. Excelente relación rendimiento/precio. 12GB GDDR6X.",
+  "price": 1600000,
+  "category": "Tarjetas Gráficas",
+  "stock": 6,
+  "tags": ["nvidia", "rtx", "4070ti", "gigabyte", "1440p", "gaming", "value"]
+}
+
+### 3.4 Procesador flagship - i9
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Intel Core i9-13900KF",
+  "description": "El procesador gaming más potente de Intel. 24 cores, perfecto para gaming 4K, streaming y multitarea extrema.",
+  "price": 1200000,
+  "category": "Procesadores",
+  "stock": 3,
+  "tags": ["intel", "i9", "13900kf", "gaming", "streaming", "flagship", "unlocked"]
+}
+
+### 3.5 Procesador gaming - i7
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Intel Core i7-13700KF", 
+  "description": "Excelente procesador para gaming. 16 cores, ideal para gaming 1440p/4K y streaming ocasional.",
+  "price": 850000,
+  "category": "Procesadores",
+  "stock": 5,
+  "tags": ["intel", "i7", "13700kf", "gaming", "value", "unlocked"]
+}
+
+### 3.6 RAM DDR5 high-end
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Corsair Dominator Platinum DDR5 32GB 6000MHz",
+  "description": "Memoria premium DDR5 para gaming extremo. 32GB (2x16GB) 6000MHz CL30. RGB personalizable.",
+  "price": 950000,
+  "category": "Memoria RAM",
+  "stock": 4,
+  "tags": ["corsair", "ddr5", "32gb", "6000mhz", "gaming", "rgb", "premium"]
+}
+
+### 3.7 RAM DDR5 gaming
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "G.Skill Trident Z5 DDR5 32GB 5600MHz",
+  "description": "Excelente memoria DDR5 para gaming. 32GB (2x16GB) 5600MHz CL36. Gran relación calidad/precio.",
+  "price": 700000,
+  "category": "Memoria RAM",
+  "stock": 8,
+  "tags": ["gskill", "ddr5", "32gb", "5600mhz", "gaming", "value"]
+}
+
+### 3.8 Motherboard high-end
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "ASUS ROG Maximus Z790 HERO",
+  "description": "Motherboard premium Z790 para i9/i7. WiFi 6E, multiple M.2, RGB Aura Sync. Perfecta para builds extremos.",
+  "price": 1400000,
+  "category": "Motherboards",
+  "stock": 2,
+  "tags": ["asus", "z790", "hero", "premium", "wifi6e", "rgb", "overclocking"]
+}
+
+### 3.9 SSD NVMe gaming
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Samsung 980 PRO 2TB NVMe Gen4",
+  "description": "SSD NVMe ultra rápido para gaming. 2TB de capacidad, velocidades hasta 7000MB/s. Ideal para juegos AAA.",
+  "price": 480000,
+  "category": "Almacenamiento",
+  "stock": 6,
+  "tags": ["samsung", "nvme", "2tb", "gen4", "gaming", "fast"]
+}
+
+### 3.10 Fuente de poder
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Corsair RM1000x 1000W 80+ Gold",
+  "description": "Fuente modular premium 1000W. Certificación 80+ Gold, completamente modular. Perfecta para RTX 4090.",
+  "price": 650000,
+  "category": "Fuentes de Poder",
+  "stock": 4,
+  "tags": ["corsair", "1000w", "modular", "80plus", "gold", "premium"]
+}
+
+################################
+# PASO 4: CONFIGURAR WHATSAPP CON TWILIO
+################################
+
+### 4.1 Configurar Twilio para testing
+PUT {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "twilioAccountSid": "TU_TWILIO_ACCOUNT_SID",
+  "twilioAuthToken": "TU_TWILIO_AUTH_TOKEN", 
+  "twilioPhoneNumber": "whatsapp:+14155238886",
+  "whatsappProvider": "twilio",
+  "isWhatsappEnabled": true
+}
+
+### 4.2 Probar configuración
+POST {{baseUrl}}/whatsapp/test
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "testMessage": "¡Hola! Soy Alex de PC Gamers Elite 🎮 ¿Listo para armar tu setup gaming definitivo?",
+  "testPhoneNumber": "+57300XXXXXXX"
+}
+
+################################
+# PASO 5: VERIFICAR SETUP
+################################
+
+### 5.1 Ver configuración del bot
+GET {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{authToken}}
+
+### 5.2 Ver todos los productos
+GET {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+
+### 5.3 Ver configuración de WhatsApp
+GET {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+
+### 5.4 Ver conversaciones (debería estar vacío inicialmente)
+GET {{baseUrl}}/whatsapp/conversations
+Authorization: Bearer {{authToken}}
+
+################################
+# INSTRUCCIONES FINALES
+################################
+
+# 1. Actualiza las credenciales de Twilio en el request 4.1
+# 2. Actualiza tu número de teléfono en el request 4.2
+# 3. En WhatsApp, envía "join [tu-codigo]" a +1 415 523 8886
+# 4. Configura el webhook en Twilio Console:
+#    URL: https://tudominio.com/api/whatsapp/webhook/twilio
+# 5. ¡Envía un mensaje desde WhatsApp y disfruta!
+
+################################
+# EJEMPLOS DE CONVERSACIÓN
+################################
+
+# Desde WhatsApp puedes probar:
+# • "Hola"
+# • "Quiero una RTX 4090"
+# • "¿Cuánto cuesta armar una PC para Cyberpunk 2077 en 4K?"
+# • "Necesito un procesador para streaming"
+# • "¿Qué me recomiendan con presupuesto de 5 millones?"

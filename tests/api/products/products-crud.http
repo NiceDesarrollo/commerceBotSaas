@@ -8,7 +8,7 @@
 @tenantId = cmdhkxgb90000ogtg90akfgel
 
 # 🔑 TOKEN - Reemplazar con token real después del login
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNDYyNTE2LCJleHAiOjE3NTQwNjczMTZ9.xeZH6YZ05Yy0-DAdMcpkssOLaElUZnKsaVtNQvdCBjo
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWR0MzE0MmcwMDAyb2dud2twdnlscmZrIiwiZW1haWwiOiJhZG1pbkBmcmlraXBsYXphLmNvbSIsInJvbGUiOiJBRE1JTiIsInRlbmFudElkIjoiY21kdDMxM3gzMDAwMG9nbnd3NmJpYjEwaSIsImlhdCI6MTc1NDA2ODQ5OSwiZXhwIjoxNzU0NjczMjk5fQ.GSlLgHGuPLadYSw7ZGtHMJFqOjUYjFWcJ7X0WpTXdA0
 
 # Variables de productos
 @productId = cmdj2c19c0001ogb0s2g4z9v0
@@ -23,7 +23,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@tenant.com",
+  "email": "admin@frikiplaza.com",
   "password": "admin123"
 }
 

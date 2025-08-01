@@ -12,7 +12,7 @@
 @adminPassword = admin123
 
 # 🔑 TOKEN - Reemplazar con token real después del login
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNDYxODQyLCJleHAiOjE3NTQwNjY2NDJ9.XnfAzrJcWG2n-9h34H1UXu3dGVFnMSGNv-rMlaLENgU
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRvcWFvYXQwMDAyb2dpMGZra2ZwcmliIiwiZW1haWwiOiJhZG1pbkBmcmlraXBsYXphLmNvbSIsInJvbGUiOiJBRE1JTiIsInRlbmFudElkIjoiY21kb3FhbzVuMDAwMG9naTBhcnJja21xbCIsImlhdCI6MTc1MzgwNTI4MSwiZXhwIjoxNzU0NDEwMDgxfQ.467XUNCEgxKj_yu2PxAvJbbJSpcbW5Vv6j16efkZ2Lc
 
 ###############################################
 ### 🔓 OBTENER TOKEN PARA PRUEBAS

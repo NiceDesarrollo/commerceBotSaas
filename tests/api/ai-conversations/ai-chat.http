@@ -5,13 +5,13 @@
 
 # Variables del módulo
 @baseUrl = http://localhost:3000/api
-@tenantId = cmdhkxgb90000ogtg90akfgel
+@tenantId = cmdoq78720000ogiscz0rb3zt
 
 # 🔑 TOKEN - Reemplazar con token real después del login
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRoa3hnZmEwMDAyb2d0Z2N0M2pqcnA3IiwiZW1haWwiOiJhZG1pbkB0ZW5hbnQuY29tIiwicm9sZSI6IkFETUlOIiwidGVuYW50SWQiOiJjbWRoa3hnYjkwMDAwb2d0ZzkwYWtmZ2VsIiwiaWF0IjoxNzUzNzIyOTM2LCJleHAiOjE3NTQzMjc3MzZ9.IoP_j7MD-lAlg2mTDYG-p29PItyzL9h3Uf1dwIvQXkg
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWRvcWFvYXQwMDAyb2dpMGZra2ZwcmliIiwiZW1haWwiOiJhZG1pbkBmcmlraXBsYXphLmNvbSIsInJvbGUiOiJBRE1JTiIsInRlbmFudElkIjoiY21kb3FhbzVuMDAwMG9naTBhcnJja21xbCIsImlhdCI6MTc1MzgwNTI4MSwiZXhwIjoxNzU0NDEwMDgxfQ.467XUNCEgxKj_yu2PxAvJbbJSpcbW5Vv6j16efkZ2Lc
 
 # Variables de chat
-@conversationId = CONVERSATION_ID_AQUI
+@conversationId = conv-1753805846416-qpffhmrw8
 @clientPhone = +1234567890
 @messageId = MESSAGE_ID_AQUI
 
@@ -24,8 +24,163 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "admin@tenant.com",
+  "email": "admin@frikiplaza.com",
   "password": "admin123"
+}
+
+###############################################
+### 🎮 SIMULACIÓN DE PROSPECTO REAL - Alex (Estudiante Gamer)
+### Presupuesto: $800-1200 | Juega: Valorant, CS2, LoL
+###############################################
+
+### 2. MENSAJE INICIAL - Consulta general
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Hola, soy estudiante universitario y quiero armar mi primer setup gaming serio. Tengo un presupuesto de unos $1000. ¿Qué me recomiendan?",
+  "clientPhone": "+1555-ALEX-001"
+}
+
+### 3. ESPECIFICAR NECESIDADES - Juegos que juega
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Principalmente juego Valorant, CS2 y League of Legends. A veces algún juego AAA como el nuevo Spider-Man. Necesito que corra fluido en 1080p.",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 4. PREGUNTAR POR COMPONENTES ESPECÍFICOS
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Me interesa mucho la RTX 4070 Super que mencionaste, pero está un poco fuera de mi presupuesto. ¿Hay algo más económico que me dé buen rendimiento?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 5. NEGOCIACIÓN - Buscar alternativas
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Y qué tal si compro solo algunos componentes ahora y otros más adelante? ¿Qué es lo más importante para empezar?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 6. CONSULTA TÉCNICA - Compatibilidad
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Si compro el procesador i7-13700K, ¿necesito una tarjeta gráfica específica o puedo usar la que tengo por ahora?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 7. DECISIÓN DE COMPRA - Periféricos
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Ok, creo que voy con el procesador y un teclado mecánico. El Corsair K70 se ve genial. ¿Tienen descuentos si compro ambos?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 8. OBJECCIÓN DE PRECIO - Comparación
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Vi que en Amazon el mismo teclado está a $140. ¿Pueden igualar el precio o tienen alguna oferta especial?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 9. CONSULTA ADICIONAL - Servicio post-venta
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "¿Qué garantía tienen los productos? ¿Y si necesito ayuda para armar la PC?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+### 10. CIERRE DE VENTA - Confirmación
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Perfecto, me convenciste. Quiero comprar el i7-13700K y el teclado Corsair. ¿Cómo procedo con la compra?",
+  "clientPhone": "+1555-ALEX-001",
+  "conversationId": "{{conversationId}}"
+}
+
+###############################################
+### 🏆 SIMULACIÓN PROSPECTO AVANZADO - Maria (Streamer Pro)
+### Presupuesto: $2000+ | Streaming + Gaming competitivo
+###############################################
+
+### 11. PROSPECTO PREMIUM - Necesidades profesionales
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Hola, soy streamer y necesito actualizar completamente mi setup. Hago streaming de gaming en 1440p y necesito que todo sea top tier. Presupuesto flexible.",
+  "clientPhone": "+1555-MARIA-PRO"
+}
+
+### 12. REQUERIMIENTOS ESPECÍFICOS
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Necesito dual monitor, uno ultrawide para jugar y otro normal para el chat. También quiero que todo tenga RGB coordinado. ¿Qué me sugieres?",
+  "clientPhone": "+1555-MARIA-PRO",
+  "conversationId": "conv-maria-streamer-setup"
+}
+
+###############################################
+### 💔 SIMULACIÓN CLIENTE PERDIDO - Carlos (Precio sensible)
+### Presupuesto muy limitado: $300-500
+###############################################
+
+### 13. CLIENTE CON PRESUPUESTO MUY BAJO
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "Hola, quiero una PC gamer pero solo tengo $400. ¿Qué puedo conseguir con ese presupuesto?",
+  "clientPhone": "+1555-CARLOS-LOW"
+}
+
+### 14. ESCALAMIENTO - Alternativas creativas
+POST {{baseUrl}}/ai/chat
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "message": "$400 es todo lo que tengo. ¿No tienen productos usados o algún plan de financiamiento?",
+  "clientPhone": "+1555-CARLOS-LOW",
+  "conversationId": "conv-carlos-budget"
 }
 
 ###############################################
@@ -50,7 +205,7 @@ Content-Type: application/json
 {
   "message": "¿Qué laptops tienen disponibles?",
   "clientPhone": "{{clientPhone}}",
-  "conversationId": "conv-12345"
+  "conversationId": "conv-1753805626978-2t9v0qqzs"
 }
 
 ### 4. CHAT CON CONTEXTO ADICIONAL

@@ -72,6 +72,18 @@ model BotConfig{
   useImages Boolean @default(true)
   aiProvider String @default("gemini") // "gemini", "openai", "auto"
   aiModel String? // Modelo específico como "gpt-4", "gemini-pro"
+  
+  // WhatsApp Configuration
+  whatsappPhoneNumberId String? // Phone Number ID from Meta Business
+  whatsappAccessToken String? // Access token for WhatsApp Business API
+  whatsappWebhookToken String? // Token for webhook verification
+  whatsappProvider String @default("none") // "none", "cloud_api", "twilio", "360dialog"
+  isWhatsappEnabled Boolean @default(false)
+  
+  // Twilio Configuration
+  twilioAccountSid String? // Twilio Account SID
+  twilioAuthToken String? // Twilio Auth Token
+  twilioPhoneNumber String? // Twilio phone number (sandbox: whatsapp:+14155238886)
 }
 
 model ChatHistory{

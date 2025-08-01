@@ -14,6 +14,7 @@ const auth_module_1 = require("./auth/auth.module");
 const users_module_1 = require("./users/users.module");
 const products_module_1 = require("./products/products.module");
 const ai_module_1 = require("./ai/ai.module");
+const whatsapp_module_1 = require("./whatsapp/whatsapp.module");
 const jwt_auth_guard_1 = require("./auth/jwt-auth.guard");
 let AppModule = class AppModule {
 };
@@ -29,6 +30,7 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             products_module_1.ProductsModule,
             ai_module_1.AiModule,
+            whatsapp_module_1.WhatsappModule,
         ],
         providers: [
             {

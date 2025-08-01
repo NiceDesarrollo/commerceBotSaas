@@ -1,0 +1,105 @@
+### WhatsApp con Meta Business Cloud API - Testing
+### Asegúrate de tener un JWT token válido
+
+@baseUrl = http://localhost:3000/api
+@authToken = YOUR_JWT_TOKEN_HERE
+
+### 1. Configurar Meta Business Cloud API
+PUT {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "whatsappPhoneNumberId": "YOUR_PHONE_NUMBER_ID",
+  "whatsappAccessToken": "YOUR_ACCESS_TOKEN",
+  "whatsappWebhookToken": "your_webhook_verify_token_123",
+  "whatsappProvider": "cloud_api",
+  "isWhatsappEnabled": true
+}
+
+### 2. Ver configuración actual
+GET {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+
+### 3. Probar configuración de Meta
+POST {{baseUrl}}/whatsapp/test
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "testMessage": "¡Hola! Test desde Meta Business API. ¿Todo funcionando? 🚀",
+  "testPhoneNumber": "+573001234567"
+}
+
+### 4. Enviar mensaje via Meta
+POST {{baseUrl}}/whatsapp/send-message
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "to": "+573001234567", 
+  "message": "¡Hola! Este mensaje viene directo desde Meta Business Cloud API."
+}
+
+### 5. Webhook verification endpoint (Meta lo llama)
+GET {{baseUrl}}/whatsapp/webhook?hub.mode=subscribe&hub.challenge=CHALLENGE_TOKEN&hub.verify_token=your_webhook_verify_token_123
+
+### 6. Simular webhook de Meta (testing interno)
+POST {{baseUrl}}/whatsapp/webhook
+Content-Type: application/json
+
+{
+  "object": "whatsapp_business_account",
+  "entry": [
+    {
+      "id": "WHATSAPP_BUSINESS_ACCOUNT_ID",
+      "changes": [
+        {
+          "value": {
+            "messaging_product": "whatsapp",
+            "metadata": {
+              "display_phone_number": "15551234567",
+              "phone_number_id": "YOUR_PHONE_NUMBER_ID"
+            },
+            "contacts": [
+              {
+                "profile": {
+                  "name": "Test User"
+                },
+                "wa_id": "573001234567"
+              }
+            ],
+            "messages": [
+              {
+                "from": "573001234567",
+                "id": "wamid.test123",
+                "timestamp": "1640995200",
+                "text": {
+                  "body": "Hola, quiero información sobre RTX 4090"
+                },
+                "type": "text"
+              }
+            ]
+          },
+          "field": "messages"
+        }
+      ]
+    }
+  ]
+}
+
+################################
+# CONFIGURACIÓN EN META
+################################
+
+# En Meta Developers Console:
+# 1. App Dashboard > WhatsApp > Configuration
+# 2. Webhook URL: https://tudominio.com/api/whatsapp/webhook
+# 3. Verify Token: your_webhook_verify_token_123
+# 4. Webhook fields: messages
+
+# En Meta Business Suite:
+# 1. business.facebook.com
+# 2. Settings > Accounts > WhatsApp Accounts
+# 3. Configurar número de teléfono real
+# 4. Completar Business Verification

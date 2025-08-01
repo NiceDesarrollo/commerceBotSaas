@@ -1,0 +1,143 @@
+### WhatsApp con Twilio - Testing Completo
+### Asegúrate de tener un JWT token válido
+
+@baseUrl = http://localhost:3000/api
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjbWR0MzE0MmcwMDAyb2dud2twdnlscmZrIiwiZW1haWwiOiJhZG1pbkBmcmlraXBsYXphLmNvbSIsInJvbGUiOiJBRE1JTiIsInRlbmFudElkIjoiY21kdDMxM3gzMDAwMG9nbnd3NmJpYjEwaSIsImlhdCI6MTc1NDA2ODQ5OSwiZXhwIjoxNzU0NjczMjk5fQ.GSlLgHGuPLadYSw7ZGtHMJFqOjUYjFWcJ7X0WpTXdA0
+
+### 1. Ver proveedores disponibles
+GET {{baseUrl}}/whatsapp/providers
+
+### 2. Configurar Twilio Sandbox
+PUT {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "twilioAccountSid": "ACec93a063d247fb851061f46629b3072e",
+  "twilioAuthToken": "ffd2e7bb317612ee2dc09fc7291f90f0",
+  "twilioPhoneNumber": "whatsapp:+12543234752",
+  "whatsappProvider": "twilio",
+  "isWhatsappEnabled": true
+}
+
+### 3. Ver configuración actual
+GET {{baseUrl}}/whatsapp/config
+Authorization: Bearer {{authToken}}
+
+### 4. Probar configuración de Twilio
+POST {{baseUrl}}/whatsapp/test
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "testMessage": "¡Hola! Soy Alex de PC Gamers Elite. ¿En qué puedo ayudarte? 🎮",
+  "testPhoneNumber": "+12543234752"
+}
+
+### 5. Enviar mensaje manual
+POST {{baseUrl}}/whatsapp/send-message
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "to": "+573001234567",
+  "message": "¡Hola! Bienvenido a PC Gamers Elite. Tenemos las mejores RTX 4090 disponibles. ¿Te interesa conocer nuestras ofertas?"
+}
+
+### 6. Ver conversaciones
+GET {{baseUrl}}/whatsapp/conversations?limit=20
+Authorization: Bearer {{authToken}}
+
+### 7. Simular webhook de Twilio (para testing interno)
+POST {{baseUrl}}/whatsapp/webhook/twilio
+Content-Type: application/x-www-form-urlencoded
+
+MessageSid=SM123abc&AccountSid=AC123&From=whatsapp%3A%2B573001234567&To=whatsapp%3A%2B14155238886&Body=Hola%2C%20quiero%20una%20RTX%204090
+
+### 8. Configurar bot específico para gaming
+PUT {{baseUrl}}/ai/bot-config
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "botName": "Alex - Experto PC Gaming",
+  "promptStyle": "Experto entusiasta en gaming, conoce perfectamente hardware de PCs. Amigable pero técnico cuando es necesario. Ayuda a los clientes a encontrar el setup perfecto para sus necesidades.",
+  "greeting": "¡Hola! Soy Alex, tu experto en PCs gaming de PC Gamers Elite. ¿Buscas armar tu setup definitivo o upgradearlo? ¡Estoy aquí para ayudarte! 🎮",
+  "temperature": 0.8,
+  "aiProvider": "gemini"
+}
+
+### 9. Agregar productos gaming
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "RTX 4090 ASUS ROG Strix",
+  "description": "La tarjeta gráfica más poderosa para gaming 4K y ray tracing extremo",
+  "price": 2800000,
+  "category": "Tarjetas Gráficas",
+  "stock": 3,
+  "tags": ["gaming", "nvidia", "rtx", "4090", "4k", "raytracing"]
+}
+
+### 10. Agregar más productos
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Intel i9-13900KF",
+  "description": "Procesador de alta gama para gaming y streaming sin gráficos integrados",
+  "price": 1200000,
+  "category": "Procesadores",
+  "stock": 5,
+  "tags": ["intel", "i9", "gaming", "streaming", "unlocked"]
+}
+
+### 11. Agregar memoria RAM
+POST {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+  "name": "Corsair Vengeance DDR5 32GB",
+  "description": "Kit de memoria DDR5 de alta velocidad para gaming extremo",
+  "price": 650000,
+  "category": "Memoria RAM",
+  "stock": 8,
+  "tags": ["corsair", "ddr5", "32gb", "gaming", "rgb"]
+}
+
+### 12. Ver todos los productos
+GET {{baseUrl}}/products
+Authorization: Bearer {{authToken}}
+
+################################
+# TESTING DE CONVERSACIONES
+################################
+
+### Ejemplos de mensajes que puedes enviar desde WhatsApp:
+# 1. "Hola" - Saludo inicial
+# 2. "¿Qué tarjetas gráficas tienen?" - Consulta de productos
+# 3. "Necesito una RTX 4090" - Búsqueda específica
+# 4. "¿Cuánto cuesta armar una PC gaming completa?" - Consulta de precios
+# 5. "Quiero algo para jugar Cyberpunk en 4K" - Necesidad específica
+
+################################
+# CONFIGURACIÓN DE WEBHOOK EN TWILIO
+################################
+
+# En Twilio Console:
+# 1. Ve a Messaging > Settings > WhatsApp sandbox settings
+# 2. Webhook URL: https://tudominio.com/api/whatsapp/webhook/twilio
+# 3. O para testing local con ngrok: https://abc123.ngrok.io/api/whatsapp/webhook/twilio
+
+################################
+# ACTIVAR SANDBOX EN WHATSAPP
+################################
+
+# Desde tu WhatsApp personal:
+# 1. Envía mensaje a: +1 415 523 8886
+# 2. Mensaje: join [tu-codigo-sandbox]
+# 3. Ejemplo: join proud-tiger-123
